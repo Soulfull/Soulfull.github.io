@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Shower Presentation Engine</title>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="shower/themes/ribbon/styles/screen-16x10.css">
+</head>
+<body class="shower list">
+	<header class="caption">
+		<h1>Shower Presentation Engine</h1>
+		<p>Yours Truly, Famous Inc.</p>
+	</header>
+	<section class="slide" id="cover">
+		<h2 style="position: absolute; top: 50px; left: 50px; color: #333;">Redux</h2>
+		<img src="pictures/title.jpg" alt="" class="cover">
+		<!--
+			To apply styles to the certain slides
+			set slide ID to get needed elements
+			-->
+		<style>
+			#cover h2 {
+				margin:30px 0 0;
+				color:#FFF;
+				text-align:center;
+				font-size:70px;
+				}
+			#cover p {
+				margin:10px 0 0;
+				text-align:center;
+				color:#FFF;
+				font-style:italic;
+				font-size:20px;
+				}
+				#cover p a {
+					color:#FFF;
+					}
+		</style>
+	</section>
+	<section class="slide">
+		<h2>Redux</h2>
+		<h2>Redux + React</h2>
+	</section>
+	<section class="slide">
+		<h2>3 принципа Redux</h2>
+		<p><strong>Первый:</strong> State (состояние) всего приложения, в  том числе и ui, хранится в объекте внутри одного store (хранилища)</p>
+		<pre style="font-size: 18px; line-height: 1.4;">
+			<code><mark>store.getState();</mark> // => {</code>
+			<code>	chart: {...},</code>
+			<code>	notices: [{...}, {...}, {...}],</code>
+			<code>	user: {</code>
+			<code>		id: 12320354,</code>
+			<code>		balance: 2000,</code>
+			<code>		currency: 'usd'</code>
+			<code>	},</code>
+			<code>}</code>
+		</pre>
+		
+		<!-- <ol>
+			<li>State (состояние) всего приложения хранится в объекте внутри одного store (хранилища)</li>
+			<li>Однонаправленный поток данных</li>
+			<li>Функции, описывающие КАК ИЗМЕНИТЬ стейт должны быть чистыми</li>
+		</ol> -->
+	</section>
+	<section class="slide">
+		<h2>Store</h2>
+		<pre>
+			<code>store = {</code>
+			<code>	getState: () => {...},</code>
+			<code>	dispatch: ({action}) => {...},</code>
+			<code>	subscribe: (callback) => {...}</code>
+			<code>}</code>
+		</pre>
+	</section>
+	<section class="slide">
+		<h2>3 принципа Redux</h2>
+		<p><strong>Второй:</strong> Однонаправленный поток данных</p>
+		<p>Стейт readonly! Изменить дерево состояния можно только через вызов action'a - объекта, который описывает ЧТО ПРОИЗОШЛО. Состояние нельзя изменить напрямую.</p>
+	</section>
+
+	<section class="slide">
+		<pre>
+			<code class="comment">// плохо</code>
+			<code>state.balance += 2000</code>
+		</pre>
+		<pre>
+			<code class="comment">// хорошо</code>
+			<code>store.dispatch({</code>
+			<code>	type: 'BALANCE_INCREASE',</code>
+			<code>	payload: 2000</code>
+			<code>});</code>
+		</pre>
+	</section>
+	<section class="slide">
+		<h2>3 принципа Redux</h2>
+		<p><strong>Третий:</strong> Чистые редюсеры</p>
+		<p>
+			Чтобы описать изменение состояния приложения надо написать функцию, которая принимает
+			предыдущее состояние и событие и возвращает новое состояние.
+		</p>
+		<pre style="font-size: 18px;">
+			<code>function square(x) {return x * x;} <span class="comment"> //pure</span>
+function square(x) {
+	updateDataBase(x);
+	return x * x;
+} <span class="comment"> //impure</span></code>
+		</pre>
+	</section>
+	<section class="slide">
+		<pre>
+			<code>const reducer = (state, action) => {</code>
+			<code>  switch (action.type) {</code>
+			<code>    case 'BALANCE_INCREASE':</code>
+			<code>      return {...state,</code>
+			<code>             {balance: state.balance + action.payload}</code>
+			<code>      }</code>
+			<code>    default:</code>
+			<code>      return state</code>
+			<code>  }</code>
+			<code>}</code>
+		</pre>
+	</section>
+
+	<section class="slide">
+		<img class="cover" src="pictures/without_middleware.png">
+	</section>
+
+	<section class="slide">
+		<h2>Минимальное redux-приложение</h2>
+		<a target="_blank" href="https://jsbin.com/vibedix/28/edit?html,js,output">https://jsbin.com</a><br>
+		<a target="_blank" href="https://gist.github.com/anonymous/8d92cd979a4880368c6d0479d58483b9">github</a>
+	</section>
+
+	<section class="slide">
+		<h2 class="shout shrink">Где тогда писать сайд-эффекты?</h2>
+	</section>
+
+	<section class="slide">
+		<img class="cover" src="pictures/without_middleware.png">
+	</section>
+
+	<section class="slide">
+		<img class="cover" src="pictures/with_middleware.png">
+	</section>
+
+	<section class="slide">
+	<h2>Мидлвейр. redux-thunk</h2>
+		<pre>
+			<code>import { createStore, <mark>applyMiddleware</mark> } from 'redux'</code>
+			<code><mark>import thunk from 'redux-thunk'</mark></code>
+			<code><mark>import reducer from './reducers'</mark></code>
+			<code>const store = createStore(</code>
+			<code>    reducer,</code>
+			<code>    <mark>{}</mark>,</code>
+			<code>    <mark>applyMiddleware(thunk))</mark>;</code>
+		</pre>
+	</section>
+
+	<section class="slide">
+	<h2>Мидлвейр. redux-thunk</h2>
+	<table>
+		<tr>
+			<td style="font-size: 18px">
+				<pre>
+					<code class="comment">// До</code>
+					<code>store.dispatch({</code>
+					<code>	type: 'BALANCE_INCREASE',</code>
+					<code>	payload: 2000</code>
+					<code>});</code>
+				</pre>
+			</td>
+				<td style="font-size: 18px">
+				<pre>
+					<code class="comment">// После</code>
+					<code>store.dispatch((dispatch) => {</code>
+					<code>	dispatch({</code>
+					<code>		type: 'FETCHING'</code>
+					<code>	});</code>
+					<code>	$.ajax().then((data) => {</code>
+					<code>		dispatch({</code>
+					<code>			type: 'FETCHING_SUCCESS',</code>
+					<code>			payload: data</code>
+					<code>		})</code>
+					<code>	})</code>
+					<code>});</code>
+				</pre>
+			</td>
+		</tr>
+	</table>
+	</section>
+
+	<section class="slide">
+		<h2>CombineReducers</h2>
+		<p>Функция CombineReducers позводяет разбить стейт приложения на части. Каждый редюсер отвечает 
+за свой срез стейта.
+Итоговый редюсер вызывает дочерние редюсеры и сохраняет их результаты в единый объект стейта.</p>
+
+		<a target="_blank" href="https://jsbin.com/jidobuf/6/edit?js,console,output">https://jsbin.com</a><br>
+		<a target="_blank" href="https://gist.github.com/anonymous/13b182d580df6e1c337762ad9b189249">github</a>
+	</section>
+
+
+	<section class="slide">
+		<h2>Redux + React</h2>
+	</section>
+
+	<section class="slide">
+		<h2>Два вида компонентов</h2>
+		<table style="width: 100%; margin:0; border-collapse: collapse; table-layout: fixed;">
+			<tr>
+				<td style="padding: 0;">
+					<strong>Компонент-представления</strong>
+					<ul>
+						<li>Как выглядит (разметка, стили)</li>
+						<li>Не знают о Redux</li>
+						<li>Читают данные из props</li>
+						<li>Вызывают колбеки из props</li>
+						<li>Написаны руками</li>
+					</ul>
+				</td>
+	
+				<td style="padding: 0;">
+					<strong>Компонент-контейнер</strong>
+					<ul>
+						<li>Как работает (загрузка данных, обновление состояния)</li>
+						<li>Знает о Redux</li>
+						<li>Подписываются на Redux состояние</li>
+						<li>Отправляют Redux действия</li>
+						<li>Обычно генерируются React Redux</li>
+					</ul>
+				</td>
+			</tr>
+		</table>
+	</section>
+
+	<section class="slide">
+		<h2>Как прокидывать в react-компоненты state и actions?</h2>
+		<h2>Как диспатчить actions?</h2>
+
+		<p><a target="_blank" href="https://jsbin.com/lehuhu/41/edit?js,console,output">Решение</a>
+		<br>
+		<a arget="_blank" href="https://gist.github.com/anonymous/3d1350ed87db34e794e48b43fe55c364">github</a></p>
+	</section>
+
+	<section class="slide">
+		<h2>Спасибо.</h2>
+	</section>
+
+
+
+
+
+	<!--
+		To hide progress bar from entire presentation
+		just remove “progress” element.
+		-->
+	<div class="progress"></div>
+	<script src="shower/shower.min.js"></script>
+	<!-- Copyright © 2015 Yours Truly, Famous Inc. -->
+	<!-- Photos by John Carey, fiftyfootshadows.net -->
+</body>
+</html>
